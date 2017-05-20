@@ -1,4 +1,4 @@
-# -*- coding: <utf-8> -*-
+# -*- coding: utf-8 -*-
 
 import requests
 import lxml.html
@@ -147,10 +147,10 @@ class TableExtractor():
 			t = self.delete_fonts(t)			# удаление тегов <font> и </font>
 			# таблицы склонения существительных можно определить по двум типам атрибутов: rules="all" или "class": "inflection-table"
 			# извлекаем все подходящие под это условие таблицы
+			text = BeautifulSoup(t, 'lxml')
 			all_tables = text.findAll('table', rules="all")
 			all_tables.extend(text.findAll('table', attrs={"class": "inflection-table"}))
 			# проверка языка: оставляем только таблицы, относящиеся к азербайджанскому
-			text = BeautifulSoup(t, 'lxml')
 			languages = text.findAll('span', id=other_lang_id)	# находим элементы с id языков
 			other_lang = None
 			for l in languages:					# находим первый не азербайджанский id, запоминаем
