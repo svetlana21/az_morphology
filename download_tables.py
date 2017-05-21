@@ -48,10 +48,13 @@ class TableExtractor():
 		'''
 		Функция для скачивания таблиц словоизменения глаголов и преобразования их в словарь.
 		:param wordlist: список глаголов
-		:return: словарь из всех полученных таблиц
+		:return: словарь из всех полученных таблиц, количество лемм, количество форм
 		'''
 		morphodict_verbs = OrderedDict()
+		count_forms = 0
+		count_lemmas = 0
 		for word in wordlist:       # для каждого глагола в списке загружаем текст его страницы
+			print(word)
 			url = 'https://az.wiktionary.org/wiki/{}'.format(requests.utils.quote(word, safe=''))
 			t = self.s.get(url).text
 			root = lxml.html.fromstring(t)
@@ -73,10 +76,12 @@ class TableExtractor():
 							form_dict.update({'Case': self.verb_grammems['Cases'][i]})
 						form_list.append(OrderedDict([(el, form_dict)]))    # список словарей для всех форм слова
 				morphodict_verbs.update({word:form_list})   # словарь лемм
+				count_forms += len(form_list)				# подсчёт статистики
+				count_lemmas += 1
 			else:
 				if len(strings) != 0:
 					print(word,': Wrong table')
-		return morphodict_verbs
+		return morphodict_verbs, count_lemmas, count_forms
 
 	def extract_infl(self, inflection):
 		'''
@@ -121,24 +126,26 @@ class TableExtractor():
 
 	def delete_fonts(self,html):
 		'''
-		В таблицах встречается выделение цветом отдельных морфем с помощью тега <font>.
+		В таблицах встречается выделение цветом отдельных морфем с помощью тегов <font> и <b>.
 		Это приводит к тому, что слово оказывается разделённым этими тегами на несколько частей.
-		Функция удаляет теги <font> и </font> во избежание ошибок.
+		Функция удаляет теги <font> и </font>, <b> и </b> во избежание ошибок.
 		:param html: текст страницы
 		:return: текст страницы без тегов <font> и </font>
 		'''
 		flags = re.IGNORECASE | re.MULTILINE
-		html = re.sub('<font\s*([^\>]+)>', '', html, flags=flags)	# удаление начального тега
-		html = re.sub('</font\s*>', '', html, flags=flags)			# удаление конечного тега
+		html = re.sub('<font\s*([^\>]+)>(<b>)?', '', html, flags=flags)		# удаление начального тега
+		html = re.sub('(</b>)?</font\s*>', '', html, flags=flags)		# удаление конечного тега
 		return html
 
 	def download_noun_tables(self, wordlist):
 		'''
 		Функция для скачивания таблиц словоизменения существительных и преобразования их в словарь.
 		:param wordlist: список существительных
-		:return: словарь из всех полученных таблиц
+		:return: словарь из всех полученных таблиц, количество лемм, количество форм
 		'''
 		morphodict_nouns = OrderedDict()
+		count_forms = 0
+		count_lemmas = 0
 		other_lang_id = re.compile('.+_dili')	# шаблон для поиска языка, отличного от az
 		for word in wordlist:  # для каждого существительного в списке загружаем текст его страницы
 			print(word)
@@ -197,17 +204,20 @@ class TableExtractor():
 				form_list_infl = self.extract_infl(inflection)		# извлекаем таблицу склонения по падежам и числам
 				full_form_list = self.extract_poss(possessives,form_list_infl)		# извлекаем таблицу притяжательных форм
 				morphodict_nouns.update({word: full_form_list})  # словарь лемм
+				count_forms += len(full_form_list)					# подсчёт статистики
+				count_lemmas += 1
 			elif len(new_tables) == 1:				# если со страницы получена 1 таблица, то проверяем, какая, и извлекаем
 				if ['Mənsubiyyətə görə'] in new_tables[0]:
 					full_form_list = self.extract_poss(new_tables[0][2:])
 				else:
 					full_form_list = self.extract_infl(new_tables[0][-6:])
 				morphodict_nouns.update({word: full_form_list})  # словарь лемм
+				count_forms += len(full_form_list)  # подсчёт статистики
+				count_lemmas += 1
 			elif len(new_tables) > 2:				# если было найдено > 2 таблиц, то что-то пошло не так
 				print('Wrong number of tables ({}).'.format(len(new_tables)))
 			#pp.pprint(morphodict_nouns)
-
-		return morphodict_nouns
+		return morphodict_nouns, count_lemmas, count_forms
 
 	def write_json(self, filename, dct):
 		'''
@@ -222,8 +232,15 @@ class TableExtractor():
 if __name__ == '__main__':
 	extractor = TableExtractor()
 	verbs_list = extractor.load_wordlist('verbs.txt')
-	morphodict_verbs = extractor.download_verb_tables(verbs_list)
+	print('Downloading verbs...')
+	morphodict_verbs, count_lemmas_verbs, count_forms_verbs = extractor.download_verb_tables(verbs_list)
 	extractor.write_json('verbs.json', morphodict_verbs)
+
 	nouns_list = extractor.load_wordlist('nouns.txt')
-	morphodict_nouns = extractor.download_noun_tables(nouns_list)
+	print('Downloading nouns...')
+	morphodict_nouns, count_lemmas_nouns, count_forms_nouns = extractor.download_noun_tables(nouns_list)
 	extractor.write_json('nouns.json', morphodict_nouns)
+	print('Verb lemmas: {}'.format(count_lemmas_verbs))
+	print('Verb forms: {}'.format(count_forms_verbs))
+	print('Noun lemmas: {}'.format(count_lemmas_nouns))
+	print('Noun forms: {}'.format(count_forms_nouns))
