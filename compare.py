@@ -48,7 +48,7 @@ def simple_comparison(corpus, wiki_forms):
 			in_corp.append(word)
 	print('Слов в корпусе: {}'.format(len(corpus)))
 	print('Словоформ в wiki: {}'.format(len(wiki_forms)))
-	print('Слов из wiki, которые есть в корпусе: {}'.format(len(in_corp)))
+	print('Словоформ из wiki, которые есть в корпусе: {}'.format(len(in_corp)))
 	print(in_corp[:10])
 
 def lexeme_comparison(corpus, morphodict):
