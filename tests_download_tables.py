@@ -163,16 +163,20 @@ class TestTableExtractor(unittest.TestCase):
 		6) есть только таблица склонения по падежам и числам;
 		7) есть обе таблицы;
 		8) на странице присутствуют другие языки, для которые также есть таблицы верного формата;
-		9) слово - не существительное, на странице есть таблица.
+		9) слово - не существительное, на странице есть таблица;
+		10) есть только таблица притяжательных форм.
 		Рассмотрены слова, описывающие эти случаи:
 		'ana' - 2, 4, 7, 8
 		'ev' - 2, 5, 7, 8
 		'qərargah' - 1
 		'abadlıq' - 3, 6
 		'getmək' - 9
+		'büst' - 10
+		'toy' - 10
+		Также в некоторых таблицах присутствует выделение жирным и цветом (см. ana) - тест функции delete_fonts.
 		:return: 
 		'''
-		test_data = ['ana', 'ev', 'qərargah', 'abadlıq','getmək']
+		test_data = ['ana', 'ev', 'qərargah', 'abadlıq','getmək', 'büst', 'toy']
 		true_result = (OrderedDict([('ana',
 									[OrderedDict([('ana', OrderedDict([('Number', 'sing'), ('Case', 'nom')]))]),
 									 OrderedDict([('analar', OrderedDict([('Number', 'plur'), ('Case', 'nom')]))]),
@@ -309,6 +313,7 @@ class TestTableExtractor(unittest.TestCase):
 									 OrderedDict([('evlərdən', OrderedDict([('Number', 'plur'), ('Case', 'abl')]))]),
 
 									 OrderedDict(
+
 										 [('evim', OrderedDict([('Person-Number_psor', '1_sing'), ('Possession', 'pos'),
 																('Number', 'sing'), ('Case', 'nom')]))]),
 									 OrderedDict([('evlərim',
@@ -536,10 +541,514 @@ class TestTableExtractor(unittest.TestCase):
 									 OrderedDict([('abadlıqda', OrderedDict([('Number', 'sing'), ('Case', 'loc')]))]),
 									 OrderedDict([('abadlıqlarda', OrderedDict([('Number', 'plur'), ('Case', 'loc')]))]),
 									 OrderedDict([('abadlıqdan', OrderedDict([('Number', 'sing'), ('Case', 'abl')]))]),
-									 OrderedDict([('abadlıqlardan', OrderedDict([('Number', 'plur'), ('Case', 'abl')]))])
-									 ]
-									)]),3,144)
+									 OrderedDict([('abadlıqlardan', OrderedDict([('Number', 'plur'), ('Case', 'abl')]))])]),
+									('büst', [OrderedDict(
+										 [('büstüm', OrderedDict([('Person-Number_psor', '1_sing'), ('Possession', 'pos'),
+																('Number', 'sing'), ('Case', 'nom')]))]),
+									 OrderedDict([('büstlərim',
+												   OrderedDict([('Person-Number_psor', '1_sing'), ('Possession', 'pos'),
+																('Number', 'plur'), ('Case', 'nom')]))]),
+									 OrderedDict([('büstümün',
+												   OrderedDict([('Person-Number_psor', '1_sing'), ('Possession', 'pos'),
+																('Number', 'sing'), ('Case', 'gen')]))]),
+									 OrderedDict([('büstlərimin',
+												   OrderedDict([('Person-Number_psor', '1_sing'), ('Possession', 'pos'),
+																('Number', 'plur'), ('Case', 'gen')]))]),
+									 OrderedDict([('büstümə',
+												   OrderedDict([('Person-Number_psor', '1_sing'), ('Possession', 'pos'),
+																('Number', 'sing'), ('Case', 'dat')]))]),
+									 OrderedDict([('büstlərimə',
+												   OrderedDict([('Person-Number_psor', '1_sing'), ('Possession', 'pos'),
+																('Number', 'plur'), ('Case', 'dat')]))]),
+									 OrderedDict([('büstümü',
+												   OrderedDict([('Person-Number_psor', '1_sing'), ('Possession', 'pos'),
+																('Number', 'sing'), ('Case', 'acc')]))]),
+									 OrderedDict([('büstlərimi',
+												   OrderedDict([('Person-Number_psor', '1_sing'), ('Possession', 'pos'),
+																('Number', 'plur'), ('Case', 'acc')]))]),
+									 OrderedDict([('büstümdə',
+												   OrderedDict([('Person-Number_psor', '1_sing'), ('Possession', 'pos'),
+																('Number', 'sing'), ('Case', 'loc')]))]),
+									 OrderedDict([('büstlərimdə',
+												   OrderedDict([('Person-Number_psor', '1_sing'), ('Possession', 'pos'),
+																('Number', 'plur'), ('Case', 'loc')]))]),
+									 OrderedDict([('büstümdən',
+												   OrderedDict([('Person-Number_psor', '1_sing'), ('Possession', 'pos'),
+																('Number', 'sing'), ('Case', 'abl')]))]),
+									 OrderedDict([('büstlərimdən',
+												   OrderedDict([('Person-Number_psor', '1_sing'), ('Possession', 'pos'),
+																('Number', 'plur'), ('Case', 'abl')]))]),
+									 OrderedDict(
+										 [('büstün', OrderedDict([('Person-Number_psor', '2_sing'), ('Possession', 'pos'),
+																('Number', 'sing'), ('Case', 'nom')]))]),
+									 OrderedDict([('büstlərin',
+												   OrderedDict([('Person-Number_psor', '2_sing'), ('Possession', 'pos'),
+																('Number', 'plur'), ('Case', 'nom')]))]),
+									 OrderedDict([('büstünün',
+												   OrderedDict([('Person-Number_psor', '2_sing'), ('Possession', 'pos'),
+																('Number', 'sing'), ('Case', 'gen')]))]),
+									 OrderedDict([('büstlərinin',
+												   OrderedDict([('Person-Number_psor', '2_sing'), ('Possession', 'pos'),
+																('Number', 'plur'), ('Case', 'gen')]))]),
+									 OrderedDict([('büstünə',
+												   OrderedDict([('Person-Number_psor', '2_sing'), ('Possession', 'pos'),
+																('Number', 'sing'), ('Case', 'dat')]))]),
+									 OrderedDict([('büstlərinə',
+												   OrderedDict([('Person-Number_psor', '2_sing'), ('Possession', 'pos'),
+																('Number', 'plur'), ('Case', 'dat')]))]),
+									 OrderedDict([('büstünü',
+												   OrderedDict([('Person-Number_psor', '2_sing'), ('Possession', 'pos'),
+																('Number', 'sing'), ('Case', 'acc')]))]),
+									 OrderedDict([('büstlərini',
+												   OrderedDict([('Person-Number_psor', '2_sing'), ('Possession', 'pos'),
+																('Number', 'plur'), ('Case', 'acc')]))]),
+									 OrderedDict([('büstündə',
+												   OrderedDict([('Person-Number_psor', '2_sing'), ('Possession', 'pos'),
+																('Number', 'sing'), ('Case', 'loc')]))]),
+									 OrderedDict([('büstlərində',
+												   OrderedDict([('Person-Number_psor', '2_sing'), ('Possession', 'pos'),
+																('Number', 'plur'), ('Case', 'loc')]))]),
+									 OrderedDict([('büstündən',
+												   OrderedDict([('Person-Number_psor', '2_sing'), ('Possession', 'pos'),
+																('Number', 'sing'), ('Case', 'abl')]))]),
+									 OrderedDict([('büstlərindən',
+												   OrderedDict([('Person-Number_psor', '2_sing'), ('Possession', 'pos'),
+																('Number', 'plur'), ('Case', 'abl')]))]),
+									 OrderedDict(
+										 [('büstü', OrderedDict([('Person-Number_psor', '3_sing'), ('Possession', 'pos'),
+															   ('Number', 'sing'), ('Case', 'nom')]))]),
+									 OrderedDict([('büstləri',
+												   OrderedDict([('Person-Number_psor', '3_sing'), ('Possession', 'pos'),
+																('Number', 'plur'), ('Case', 'nom')]))]),
+									 OrderedDict([('büstünün',
+												   OrderedDict([('Person-Number_psor', '3_sing'), ('Possession', 'pos'),
+																('Number', 'sing'), ('Case', 'gen')]))]),
+									 OrderedDict([('büstlərinin',
+												   OrderedDict([('Person-Number_psor', '3_sing'), ('Possession', 'pos'),
+																('Number', 'plur'), ('Case', 'gen')]))]),
+									 OrderedDict([('büstünə',
+												   OrderedDict([('Person-Number_psor', '3_sing'), ('Possession', 'pos'),
+																('Number', 'sing'), ('Case', 'dat')]))]),
+									 OrderedDict([('büstlərinə',
+												   OrderedDict([('Person-Number_psor', '3_sing'), ('Possession', 'pos'),
+																('Number', 'plur'), ('Case', 'dat')]))]),
+									 OrderedDict([('büstünü',
+												   OrderedDict([('Person-Number_psor', '3_sing'), ('Possession', 'pos'),
+																('Number', 'sing'), ('Case', 'acc')]))]),
+									 OrderedDict([('büstlərini',
+												   OrderedDict([('Person-Number_psor', '3_sing'), ('Possession', 'pos'),
+																('Number', 'plur'), ('Case', 'acc')]))]),
+									 OrderedDict([('büstündə',
+												   OrderedDict([('Person-Number_psor', '3_sing'), ('Possession', 'pos'),
+																('Number', 'sing'), ('Case', 'loc')]))]),
+									 OrderedDict([('büstlərində',
+												   OrderedDict([('Person-Number_psor', '3_sing'), ('Possession', 'pos'),
+																('Number', 'plur'), ('Case', 'loc')]))]),
+									 OrderedDict([('büstündən',
+												   OrderedDict([('Person-Number_psor', '3_sing'), ('Possession', 'pos'),
+																('Number', 'sing'), ('Case', 'abl')]))]),
+									 OrderedDict([('büstlərindən',
+												   OrderedDict([('Person-Number_psor', '3_sing'), ('Possession', 'pos'),
+																('Number', 'plur'), ('Case', 'abl')]))]),
+									 OrderedDict([('büstümüz',
+												   OrderedDict([('Person-Number_psor', '1_plur'), ('Possession', 'pos'),
+																('Number', 'sing'), ('Case', 'nom')]))]),
+									 OrderedDict([('büstlərimiz',
+												   OrderedDict([('Person-Number_psor', '1_plur'), ('Possession', 'pos'),
+																('Number', 'plur'), ('Case', 'nom')]))]),
+									 OrderedDict([('büstümüzin',
+												   OrderedDict([('Person-Number_psor', '1_plur'), ('Possession', 'pos'),
+																('Number', 'sing'), ('Case', 'gen')]))]),
+									 OrderedDict([('büstlərimizin',
+												   OrderedDict([('Person-Number_psor', '1_plur'), ('Possession', 'pos'),
+																('Number', 'plur'), ('Case', 'gen')]))]),
+									 OrderedDict([('büstümüzə',
+												   OrderedDict([('Person-Number_psor', '1_plur'), ('Possession', 'pos'),
+																('Number', 'sing'), ('Case', 'dat')]))]),
+									 OrderedDict([('büstlərimizə',
+												   OrderedDict([('Person-Number_psor', '1_plur'), ('Possession', 'pos'),
+																('Number', 'plur'), ('Case', 'dat')]))]),
+									 OrderedDict([('büstümüzi',
+												   OrderedDict([('Person-Number_psor', '1_plur'), ('Possession', 'pos'),
+																('Number', 'sing'), ('Case', 'acc')]))]),
+									 OrderedDict([('büstlərimizi',
+												   OrderedDict([('Person-Number_psor', '1_plur'), ('Possession', 'pos'),
+																('Number', 'plur'), ('Case', 'acc')]))]),
+									 OrderedDict([('büstümüzdə',
+												   OrderedDict([('Person-Number_psor', '1_plur'), ('Possession', 'pos'),
+																('Number', 'sing'), ('Case', 'loc')]))]),
+									 OrderedDict([('büstlərimizdə',
+												   OrderedDict([('Person-Number_psor', '1_plur'), ('Possession', 'pos'),
+																('Number', 'plur'), ('Case', 'loc')]))]),
+									 OrderedDict([('büstümüzdən',
+												   OrderedDict([('Person-Number_psor', '1_plur'), ('Possession', 'pos'),
+																('Number', 'sing'), ('Case', 'abl')]))]),
+									 OrderedDict([('büstlərimizdən',
+												   OrderedDict([('Person-Number_psor', '1_plur'), ('Possession', 'pos'),
+																('Number', 'plur'), ('Case', 'abl')]))]),
+									 OrderedDict([('büstünüz',
+												   OrderedDict([('Person-Number_psor', '2_plur'), ('Possession', 'pos'),
+																('Number', 'sing'), ('Case', 'nom')]))]),
+									 OrderedDict([('büstləriniz',
+												   OrderedDict([('Person-Number_psor', '2_plur'), ('Possession', 'pos'),
+																('Number', 'plur'), ('Case', 'nom')]))]),
+									 OrderedDict([('büstünüzün',
+												   OrderedDict([('Person-Number_psor', '2_plur'), ('Possession', 'pos'),
+																('Number', 'sing'), ('Case', 'gen')]))]),
+									 OrderedDict([('büstərinizin',
+												   OrderedDict([('Person-Number_psor', '2_plur'), ('Possession', 'pos'),
+																('Number', 'plur'), ('Case', 'gen')]))]),
+									 OrderedDict([('büstünüzə',
+												   OrderedDict([('Person-Number_psor', '2_plur'), ('Possession', 'pos'),
+																('Number', 'sing'), ('Case', 'dat')]))]),
+									 OrderedDict([('büstlərinizə',
+												   OrderedDict([('Person-Number_psor', '2_plur'), ('Possession', 'pos'),
+																('Number', 'plur'), ('Case', 'dat')]))]),
+									 OrderedDict([('büstünüzü',
+												   OrderedDict([('Person-Number_psor', '2_plur'), ('Possession', 'pos'),
+																('Number', 'sing'), ('Case', 'acc')]))]),
+									 OrderedDict([('büstlərinizi',
+												   OrderedDict([('Person-Number_psor', '2_plur'), ('Possession', 'pos'),
+																('Number', 'plur'), ('Case', 'acc')]))]),
+									 OrderedDict([('büstünüzdə',
+												   OrderedDict([('Person-Number_psor', '2_plur'), ('Possession', 'pos'),
+																('Number', 'sing'), ('Case', 'loc')]))]),
+									 OrderedDict([('büstlərinizdə',
+												   OrderedDict([('Person-Number_psor', '2_plur'), ('Possession', 'pos'),
+																('Number', 'plur'), ('Case', 'loc')]))]),
+									 OrderedDict([('büstünzüdən',
+												   OrderedDict([('Person-Number_psor', '2_plur'), ('Possession', 'pos'),
+																('Number', 'sing'), ('Case', 'abl')]))]),
+									 OrderedDict([('büstlərinizdən',
+												   OrderedDict([('Person-Number_psor', '2_plur'), ('Possession', 'pos'),
+																('Number', 'plur'), ('Case', 'abl')]))]),
+									 OrderedDict(
+										 [('büstü', OrderedDict([('Person-Number_psor', '3_plur'), ('Possession', 'pos'),
+															   ('Number', 'sing'), ('Case', 'nom')]))]),
+									 OrderedDict([('büstləri',
+												   OrderedDict([('Person-Number_psor', '3_plur'), ('Possession', 'pos'),
+																('Number', 'plur'), ('Case', 'nom')]))]),
+									 OrderedDict([('büstünün',
+												   OrderedDict([('Person-Number_psor', '3_plur'), ('Possession', 'pos'),
+																('Number', 'sing'), ('Case', 'gen')]))]),
+									 OrderedDict([('büstlərinin',
+												   OrderedDict([('Person-Number_psor', '3_plur'), ('Possession', 'pos'),
+																('Number', 'plur'), ('Case', 'gen')]))]),
+									 OrderedDict([('büstünə',
+												   OrderedDict([('Person-Number_psor', '3_plur'), ('Possession', 'pos'),
+																('Number', 'sing'), ('Case', 'dat')]))]),
+									 OrderedDict([('büstlərinə',
+												   OrderedDict([('Person-Number_psor', '3_plur'), ('Possession', 'pos'),
+																('Number', 'plur'), ('Case', 'dat')]))]),
+									 OrderedDict([('büstünü',
+												   OrderedDict([('Person-Number_psor', '3_plur'), ('Possession', 'pos'),
+																('Number', 'sing'), ('Case', 'acc')]))]),
+									 OrderedDict([('büstlərini',
+												   OrderedDict([('Person-Number_psor', '3_plur'), ('Possession', 'pos'),
+																('Number', 'plur'), ('Case', 'acc')]))]),
+									 OrderedDict([('büstündə',
+												   OrderedDict([('Person-Number_psor', '3_plur'), ('Possession', 'pos'),
+																('Number', 'sing'), ('Case', 'loc')]))]),
+									 OrderedDict([('büstlərində',
+												   OrderedDict([('Person-Number_psor', '3_plur'), ('Possession', 'pos'),
+																('Number', 'plur'), ('Case', 'loc')]))]),
+									 OrderedDict([('büstündən',
+												   OrderedDict([('Person-Number_psor', '3_plur'), ('Possession', 'pos'),
+																('Number', 'sing'), ('Case', 'abl')]))]),
+									 OrderedDict([('büstlərindən',
+												   OrderedDict([('Person-Number_psor', '3_plur'), ('Possession', 'pos'),
+																('Number', 'plur'), ('Case', 'abl')]))])]),
+									('toy', [OrderedDict(
+										[('toyum', OrderedDict([('Person-Number_psor', '1_sing'), ('Possession', 'pos'),
+																('Number', 'sing'), ('Case', 'nom')]))]),
+										OrderedDict([('toylarım',
+													  OrderedDict(
+														  [('Person-Number_psor', '1_sing'), ('Possession', 'pos'),
+														   ('Number', 'plur'), ('Case', 'nom')]))]),
+										OrderedDict([('toyumun',
+													  OrderedDict(
+														  [('Person-Number_psor', '1_sing'), ('Possession', 'pos'),
+														   ('Number', 'sing'), ('Case', 'gen')]))]),
+										OrderedDict([('toylarımın',
+													  OrderedDict(
+														  [('Person-Number_psor', '1_sing'), ('Possession', 'pos'),
+														   ('Number', 'plur'), ('Case', 'gen')]))]),
+										OrderedDict([('toyuma',
+													  OrderedDict(
+														  [('Person-Number_psor', '1_sing'), ('Possession', 'pos'),
+														   ('Number', 'sing'), ('Case', 'dat')]))]),
+										OrderedDict([('toylarıma',
+													  OrderedDict(
+														  [('Person-Number_psor', '1_sing'), ('Possession', 'pos'),
+														   ('Number', 'plur'), ('Case', 'dat')]))]),
+										OrderedDict([('toyumu',
+													  OrderedDict(
+														  [('Person-Number_psor', '1_sing'), ('Possession', 'pos'),
+														   ('Number', 'sing'), ('Case', 'acc')]))]),
+										OrderedDict([('toylarımı',
+													  OrderedDict(
+														  [('Person-Number_psor', '1_sing'), ('Possession', 'pos'),
+														   ('Number', 'plur'), ('Case', 'acc')]))]),
+										OrderedDict([('toyumda',
+													  OrderedDict(
+														  [('Person-Number_psor', '1_sing'), ('Possession', 'pos'),
+														   ('Number', 'sing'), ('Case', 'loc')]))]),
+										OrderedDict([('toylarımda',
+													  OrderedDict(
+														  [('Person-Number_psor', '1_sing'), ('Possession', 'pos'),
+														   ('Number', 'plur'), ('Case', 'loc')]))]),
+										OrderedDict([('toyumdan',
+													  OrderedDict(
+														  [('Person-Number_psor', '1_sing'), ('Possession', 'pos'),
+														   ('Number', 'sing'), ('Case', 'abl')]))]),
+										OrderedDict([('toylarımdan',
+													  OrderedDict(
+														  [('Person-Number_psor', '1_sing'), ('Possession', 'pos'),
+														   ('Number', 'plur'), ('Case', 'abl')]))]),
+										OrderedDict(
+											[('toyun',
+											  OrderedDict([('Person-Number_psor', '2_sing'), ('Possession', 'pos'),
+														   ('Number', 'sing'), ('Case', 'nom')]))]),
+										OrderedDict([('toyların',
+													  OrderedDict(
+														  [('Person-Number_psor', '2_sing'), ('Possession', 'pos'),
+														   ('Number', 'plur'), ('Case', 'nom')]))]),
+										OrderedDict([('toyunun',
+													  OrderedDict(
+														  [('Person-Number_psor', '2_sing'), ('Possession', 'pos'),
+														   ('Number', 'sing'), ('Case', 'gen')]))]),
+										OrderedDict([('toylarının',
+													  OrderedDict(
+														  [('Person-Number_psor', '2_sing'), ('Possession', 'pos'),
+														   ('Number', 'plur'), ('Case', 'gen')]))]),
+										OrderedDict([('toyuna',
+													  OrderedDict(
+														  [('Person-Number_psor', '2_sing'), ('Possession', 'pos'),
+														   ('Number', 'sing'), ('Case', 'dat')]))]),
+										OrderedDict([('toylarına',
+													  OrderedDict(
+														  [('Person-Number_psor', '2_sing'), ('Possession', 'pos'),
+														   ('Number', 'plur'), ('Case', 'dat')]))]),
+										OrderedDict([('toyunu',
+													  OrderedDict(
+														  [('Person-Number_psor', '2_sing'), ('Possession', 'pos'),
+														   ('Number', 'sing'), ('Case', 'acc')]))]),
+										OrderedDict([('toylarını',
+													  OrderedDict(
+														  [('Person-Number_psor', '2_sing'), ('Possession', 'pos'),
+														   ('Number', 'plur'), ('Case', 'acc')]))]),
+										OrderedDict([('toyunda',
+													  OrderedDict(
+														  [('Person-Number_psor', '2_sing'), ('Possession', 'pos'),
+														   ('Number', 'sing'), ('Case', 'loc')]))]),
+										OrderedDict([('toylarında',
+													  OrderedDict(
+														  [('Person-Number_psor', '2_sing'), ('Possession', 'pos'),
+														   ('Number', 'plur'), ('Case', 'loc')]))]),
+										OrderedDict([('toyundan',
+													  OrderedDict(
+														  [('Person-Number_psor', '2_sing'), ('Possession', 'pos'),
+														   ('Number', 'sing'), ('Case', 'abl')]))]),
+										OrderedDict([('toylarından',
+													  OrderedDict(
+														  [('Person-Number_psor', '2_sing'), ('Possession', 'pos'),
+														   ('Number', 'plur'), ('Case', 'abl')]))]),
+										OrderedDict(
+											[('toyu',
+											  OrderedDict([('Person-Number_psor', '3_sing'), ('Possession', 'pos'),
+														   ('Number', 'sing'), ('Case', 'nom')]))]),
+										OrderedDict([('toyları',
+													  OrderedDict(
+														  [('Person-Number_psor', '3_sing'), ('Possession', 'pos'),
+														   ('Number', 'plur'), ('Case', 'nom')]))]),
+										OrderedDict([('toyunun',
+													  OrderedDict(
+														  [('Person-Number_psor', '3_sing'), ('Possession', 'pos'),
+														   ('Number', 'sing'), ('Case', 'gen')]))]),
+										OrderedDict([('toylarının',
+													  OrderedDict(
+														  [('Person-Number_psor', '3_sing'), ('Possession', 'pos'),
+														   ('Number', 'plur'), ('Case', 'gen')]))]),
+										OrderedDict([('toyuna',
+													  OrderedDict(
+														  [('Person-Number_psor', '3_sing'), ('Possession', 'pos'),
+														   ('Number', 'sing'), ('Case', 'dat')]))]),
+										OrderedDict([('toylarına',
+													  OrderedDict(
+														  [('Person-Number_psor', '3_sing'), ('Possession', 'pos'),
+														   ('Number', 'plur'), ('Case', 'dat')]))]),
+										OrderedDict([('toyunu',
+													  OrderedDict(
+														  [('Person-Number_psor', '3_sing'), ('Possession', 'pos'),
+														   ('Number', 'sing'), ('Case', 'acc')]))]),
+										OrderedDict([('toylarını',
+													  OrderedDict(
+														  [('Person-Number_psor', '3_sing'), ('Possession', 'pos'),
+														   ('Number', 'plur'), ('Case', 'acc')]))]),
+										OrderedDict([('toyunda',
+													  OrderedDict(
+														  [('Person-Number_psor', '3_sing'), ('Possession', 'pos'),
+														   ('Number', 'sing'), ('Case', 'loc')]))]),
+										OrderedDict([('toylarında',
+													  OrderedDict(
+														  [('Person-Number_psor', '3_sing'), ('Possession', 'pos'),
+														   ('Number', 'plur'), ('Case', 'loc')]))]),
+										OrderedDict([('toyundan',
+													  OrderedDict(
+														  [('Person-Number_psor', '3_sing'), ('Possession', 'pos'),
+														   ('Number', 'sing'), ('Case', 'abl')]))]),
+										OrderedDict([('toylarından',
+													  OrderedDict(
+														  [('Person-Number_psor', '3_sing'), ('Possession', 'pos'),
+														   ('Number', 'plur'), ('Case', 'abl')]))]),
+										OrderedDict([('toyumuz',
+													  OrderedDict(
+														  [('Person-Number_psor', '1_plur'), ('Possession', 'pos'),
+														   ('Number', 'sing'), ('Case', 'nom')]))]),
+										OrderedDict([('toylarımız',
+													  OrderedDict(
+														  [('Person-Number_psor', '1_plur'), ('Possession', 'pos'),
+														   ('Number', 'plur'), ('Case', 'nom')]))]),
+										OrderedDict([('toyumuzun',
+													  OrderedDict(
+														  [('Person-Number_psor', '1_plur'), ('Possession', 'pos'),
+														   ('Number', 'sing'), ('Case', 'gen')]))]),
+										OrderedDict([('toylarımızın',
+													  OrderedDict(
+														  [('Person-Number_psor', '1_plur'), ('Possession', 'pos'),
+														   ('Number', 'plur'), ('Case', 'gen')]))]),
+										OrderedDict([('toyumuza',
+													  OrderedDict(
+														  [('Person-Number_psor', '1_plur'), ('Possession', 'pos'),
+														   ('Number', 'sing'), ('Case', 'dat')]))]),
+										OrderedDict([('toylarımıza',
+													  OrderedDict(
+														  [('Person-Number_psor', '1_plur'), ('Possession', 'pos'),
+														   ('Number', 'plur'), ('Case', 'dat')]))]),
+										OrderedDict([('toyumuzu',
+													  OrderedDict(
+														  [('Person-Number_psor', '1_plur'), ('Possession', 'pos'),
+														   ('Number', 'sing'), ('Case', 'acc')]))]),
+										OrderedDict([('toylarımızı',
+													  OrderedDict(
+														  [('Person-Number_psor', '1_plur'), ('Possession', 'pos'),
+														   ('Number', 'plur'), ('Case', 'acc')]))]),
+										OrderedDict([('toyumuzda',
+													  OrderedDict(
+														  [('Person-Number_psor', '1_plur'), ('Possession', 'pos'),
+														   ('Number', 'sing'), ('Case', 'loc')]))]),
+										OrderedDict([('toylarımızda',
+													  OrderedDict(
+														  [('Person-Number_psor', '1_plur'), ('Possession', 'pos'),
+														   ('Number', 'plur'), ('Case', 'loc')]))]),
+										OrderedDict([('toyumuzdan',
+													  OrderedDict(
+														  [('Person-Number_psor', '1_plur'), ('Possession', 'pos'),
+														   ('Number', 'sing'), ('Case', 'abl')]))]),
+										OrderedDict([('toylarımızdan',
+													  OrderedDict(
+														  [('Person-Number_psor', '1_plur'), ('Possession', 'pos'),
+														   ('Number', 'plur'), ('Case', 'abl')]))]),
+										OrderedDict([('toyunuz',
+													  OrderedDict(
+														  [('Person-Number_psor', '2_plur'), ('Possession', 'pos'),
+														   ('Number', 'sing'), ('Case', 'nom')]))]),
+										OrderedDict([('toylarınız',
+													  OrderedDict(
+														  [('Person-Number_psor', '2_plur'), ('Possession', 'pos'),
+														   ('Number', 'plur'), ('Case', 'nom')]))]),
+										OrderedDict([('toyunuzun',
+													  OrderedDict(
+														  [('Person-Number_psor', '2_plur'), ('Possession', 'pos'),
+														   ('Number', 'sing'), ('Case', 'gen')]))]),
+										OrderedDict([('toylarınızın',
+													  OrderedDict(
+														  [('Person-Number_psor', '2_plur'), ('Possession', 'pos'),
+														   ('Number', 'plur'), ('Case', 'gen')]))]),
+										OrderedDict([('toyunuza',
+													  OrderedDict(
+														  [('Person-Number_psor', '2_plur'), ('Possession', 'pos'),
+														   ('Number', 'sing'), ('Case', 'dat')]))]),
+										OrderedDict([('toylarınıza',
+													  OrderedDict(
+														  [('Person-Number_psor', '2_plur'), ('Possession', 'pos'),
+														   ('Number', 'plur'), ('Case', 'dat')]))]),
+										OrderedDict([('toyunuzu',
+													  OrderedDict(
+														  [('Person-Number_psor', '2_plur'), ('Possession', 'pos'),
+														   ('Number', 'sing'), ('Case', 'acc')]))]),
+										OrderedDict([('toylarınızı',
+													  OrderedDict(
+														  [('Person-Number_psor', '2_plur'), ('Possession', 'pos'),
+														   ('Number', 'plur'), ('Case', 'acc')]))]),
+										OrderedDict([('toyunuzda',
+													  OrderedDict(
+														  [('Person-Number_psor', '2_plur'), ('Possession', 'pos'),
+														   ('Number', 'sing'), ('Case', 'loc')]))]),
+										OrderedDict([('toylarınızda',
+													  OrderedDict(
+														  [('Person-Number_psor', '2_plur'), ('Possession', 'pos'),
+														   ('Number', 'plur'), ('Case', 'loc')]))]),
+										OrderedDict([('toyunuzdan',
+													  OrderedDict(
+														  [('Person-Number_psor', '2_plur'), ('Possession', 'pos'),
+														   ('Number', 'sing'), ('Case', 'abl')]))]),
+										OrderedDict([('toylarınızdan',
+													  OrderedDict(
+														  [('Person-Number_psor', '2_plur'), ('Possession', 'pos'),
+														   ('Number', 'plur'), ('Case', 'abl')]))]),
+										OrderedDict(
+											[('toyu',
+											  OrderedDict([('Person-Number_psor', '3_plur'), ('Possession', 'pos'),
+														   ('Number', 'sing'), ('Case', 'nom')]))]),
+										OrderedDict([('toyları',
+													  OrderedDict(
+														  [('Person-Number_psor', '3_plur'), ('Possession', 'pos'),
+														   ('Number', 'plur'), ('Case', 'nom')]))]),
+										OrderedDict([('toyunun',
+													  OrderedDict(
+														  [('Person-Number_psor', '3_plur'), ('Possession', 'pos'),
+														   ('Number', 'sing'), ('Case', 'gen')]))]),
+										OrderedDict([('toylarının',
+													  OrderedDict(
+														  [('Person-Number_psor', '3_plur'), ('Possession', 'pos'),
+														   ('Number', 'plur'), ('Case', 'gen')]))]),
+										OrderedDict([('toyına',
+													  OrderedDict(
+														  [('Person-Number_psor', '3_plur'), ('Possession', 'pos'),
+														   ('Number', 'sing'), ('Case', 'dat')]))]),
+										OrderedDict([('toylarına',
+													  OrderedDict(
+														  [('Person-Number_psor', '3_plur'), ('Possession', 'pos'),
+														   ('Number', 'plur'), ('Case', 'dat')]))]),
+										OrderedDict([('toyunu',
+													  OrderedDict(
+														  [('Person-Number_psor', '3_plur'), ('Possession', 'pos'),
+														   ('Number', 'sing'), ('Case', 'acc')]))]),
+										OrderedDict([('toylarını',
+													  OrderedDict(
+														  [('Person-Number_psor', '3_plur'), ('Possession', 'pos'),
+														   ('Number', 'plur'), ('Case', 'acc')]))]),
+										OrderedDict([('toyunda',
+													  OrderedDict(
+														  [('Person-Number_psor', '3_plur'), ('Possession', 'pos'),
+														   ('Number', 'sing'), ('Case', 'loc')]))]),
+										OrderedDict([('toylarında',
+													  OrderedDict(
+														  [('Person-Number_psor', '3_plur'), ('Possession', 'pos'),
+														   ('Number', 'plur'), ('Case', 'loc')]))]),
+										OrderedDict([('toyundan',
+													  OrderedDict(
+														  [('Person-Number_psor', '3_plur'), ('Possession', 'pos'),
+														   ('Number', 'sing'), ('Case', 'abl')]))]),
+										OrderedDict([('toylarından',
+													  OrderedDict(
+														  [('Person-Number_psor', '3_plur'), ('Possession', 'pos'),
+														   ('Number', 'plur'), ('Case', 'abl')]))])
+									]
+									 )]),5,288)
 		fact_result = self.test_extractor.download_noun_tables(test_data)
+		pp.pprint(fact_result)
 		self.assertDictEqual(true_result[0], fact_result[0])
 		self.assertEqual(true_result[1], fact_result[1])
 		self.assertEqual(true_result[2], fact_result[2])
