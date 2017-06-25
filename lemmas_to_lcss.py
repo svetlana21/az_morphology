@@ -5,7 +5,7 @@ from collections import OrderedDict
 import json
 import pprint as pp
 
-class LCS():
+class LCS:
 	'''
 	Класс для изменения извлечённых словарей. Позволяет заменить леммы на наибольшие общие подстроки форм.
 	'''
@@ -71,12 +71,48 @@ class LCS():
 		with open(filename, 'w', encoding='utf-8-sig') as f:
 			json.dump(dct, f, ensure_ascii=False)
 
+def cut_paradigms_nouns(morphodict):
+	'''
+	Удаление притяжательных форм существительных из таблиц.
+	:param morphodict: 
+	:return: 
+	'''
+	keys_to_del = []
+	for key in morphodict.keys():
+		for i in range(len(morphodict[key])):
+			form_tuple = list(morphodict[key][i].items())[0]
+			if 'Possession' in form_tuple[1].keys():
+				if i == 0:
+					keys_to_del.append(key)
+					break
+				else:
+					morphodict[key] = morphodict[key][:i]
+					break
+	for el in keys_to_del:
+		del morphodict[el]
+	#pp.pprint(morphodict)
+	return morphodict
+
+def cut_paradigm_verbs(morphodict):
+	'''
+	Удаление форм наклонений и склонения инфинитива из таблиц глаголов.
+	:param morphodict: 
+	:return: 
+	'''
+	for key in morphodict.keys():
+		morphodict[key] = morphodict[key][:5]
+	return morphodict
+
 if __name__ == '__main__':
 	lcss = LCS()
 	morphodict_verbs = lcss.load_json('verbs.json')
-	new_verbs = lcss.lcs_as_lemmas(morphodict_verbs)
-	lcss.write_json('verbs_lcs.json', new_verbs)
+	cut_morphodict_verbs = cut_paradigm_verbs(morphodict_verbs)
+	lcss.write_json('verbs_cut.json', cut_morphodict_verbs)
+	new_verbs = lcss.lcs_as_lemmas(cut_morphodict_verbs)
+	lcss.write_json('verbs_cut_lcs.json', new_verbs)
 
 	morphodict_nouns = lcss.load_json('nouns.json')
-	new_nouns = lcss.lcs_as_lemmas(morphodict_nouns)
-	lcss.write_json('nouns_lcs.json', new_nouns)
+	cut_morphodict_nouns = cut_paradigms_nouns(morphodict_nouns)
+	lcss.write_json('nouns_cut.json', cut_morphodict_nouns)
+	new_nouns = lcss.lcs_as_lemmas(cut_morphodict_nouns)
+	lcss.write_json('nouns_cut_lcs.json', new_nouns)
