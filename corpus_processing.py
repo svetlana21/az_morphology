@@ -15,7 +15,12 @@ def sents2types(corpus):
 	types.remove('<s>')		# удаление тегов начала и конца предложения, которые расставлены в корпусе
 	types.remove('</s>')
 	types.remove('')		# удаление пустых строк
-	return types
+	clear_types = []
+	for type in types:		# удаление символа U+0307, часто встречающегося в словах
+		if '̇' in type:
+			type = type.replace('̇', '')
+		clear_types.append(type)
+	return clear_types
 
 def clear(types):
 	'''
@@ -27,7 +32,8 @@ def clear(types):
 	hyphen_before = re.compile('-.+')
 	hyphen_after = re.compile('.*-')
 	for type in types:
-		if hyphen_before.match(type) or hyphen_after.match(type):
+		if hyphen_before.match(type) or hyphen_after.match(type)\
+				or len(type) == 1 or len(type) > 22:
 			bad_types.append(type)
 	for type in bad_types:
 		types.remove(type)
