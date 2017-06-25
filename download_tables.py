@@ -99,7 +99,7 @@ class TableExtractor():
 				form_list.append(OrderedDict([(el, form_dict)]))  # список словарей для всех форм слова
 		return form_list
 
-	def extract_poss(self,possessives,form_list=[]):
+	def extract_poss(self,possessives,form_list):
 		'''
 		Функция для составления словаря из таблицы притяжательных форм существительных (ana - мать, anam - моя мать).
 		:param form_list: список форм, уже созданный предыдущей функцией; в него добавляем новые формы
@@ -146,11 +146,11 @@ class TableExtractor():
 		morphodict_nouns = OrderedDict()
 		count_forms = 0
 		count_lemmas = 0
-		other_lang_id = re.compile('.+_dili')	# шаблон для поиска языка, отличного от az
+		lang_id = re.compile('.+_dili')	# шаблон для поиска id с наименованием языка
 		for word in wordlist:  # для каждого существительного в списке загружаем текст его страницы
 			print(word)
 			url = 'https://az.wiktionary.org/wiki/{}'.format(requests.utils.quote(word, safe=''))
-			t = self.s.get(url).text			# получение текстра страницы
+			t = self.s.get(url).text			# получение текста страницы
 			t = self.delete_fonts(t)			# удаление тегов <font> и </font>
 			# таблицы склонения существительных можно определить по двум типам атрибутов: rules="all" или "class": "inflection-table"
 			# извлекаем все подходящие под это условие таблицы
@@ -158,7 +158,7 @@ class TableExtractor():
 			all_tables = text.findAll('table', rules="all")
 			all_tables.extend(text.findAll('table', attrs={"class": "inflection-table"}))
 			# проверка языка: оставляем только таблицы, относящиеся к азербайджанскому
-			languages = text.findAll('span', id=other_lang_id)	# находим элементы с id языков
+			languages = text.findAll('span', id=lang_id)	# находим элементы с id языков
 			other_lang = None
 			for l in languages:					# находим первый не азербайджанский id, запоминаем
 				if l['id'] != "Az.C9.99rbaycan_dili":
@@ -208,7 +208,7 @@ class TableExtractor():
 				count_lemmas += 1
 			elif len(new_tables) == 1:				# если со страницы получена 1 таблица, то проверяем, какая, и извлекаем
 				if ['Mənsubiyyətə görə'] in new_tables[0]:
-					full_form_list = self.extract_poss(new_tables[0][2:])
+					full_form_list = self.extract_poss(new_tables[0][2:], [])
 				else:
 					full_form_list = self.extract_infl(new_tables[0][-6:])
 				morphodict_nouns.update({word: full_form_list})  # словарь лемм
