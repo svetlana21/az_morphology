@@ -150,7 +150,8 @@ class StatVertex:
 			string = pattern + "/" + files
 			files_for_constructing.append(string)
 		#pprint(files_for_constructing)
-
+		
+		# исправление	
 		ch = list()
 		for i, files in enumerate(files_for_constructing):
 			#print(files)
