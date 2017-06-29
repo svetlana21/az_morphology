@@ -41,7 +41,6 @@ class StatVertex:
 		chunking_size = int(round((length_massive_words / chunks), 0))
 		part_vertex_transition_with_positions = ([vertex_transition_with_positions[i:i + chunking_size] for i in
 												  range(0, len(vertex_transition_with_positions), chunking_size)])
-		# pprint(part_vertex_transition_with_positions[0])
 		for i, element in enumerate(part_vertex_transition_with_positions):
 			file = self.words_with_arcs_parts_data_path + '/%s_part_vertex_transition_with_positions.pkl' % i
 			f = open(file, 'wb')
@@ -61,7 +60,6 @@ class StatVertex:
 		vertex_pos_length = list()
 		with open(file, 'rb') as f:
 			vertex_trans_with_pos = pickle.load(f)
-		# pprint(vertex_trans_with_pos)
 		for elements in vertex_trans_with_pos:
 			for sub_elements in elements:
 				if sub_elements[0] != '0':
@@ -70,7 +68,6 @@ class StatVertex:
 		dictionary = dict()
 		for components in vertex_pos_length:
 			dictionary[components[0]] = dictionary.setdefault(components[0], list()) + [components[1]]
-		#pprint(dictionary)
 
 		return dictionary
 
@@ -89,12 +86,9 @@ class StatVertex:
 		for files in list_files:
 			string = pattern + "/" + files
 			files_for_constructing.append(string)
-		#pprint(files_for_constructing)
 
 		for i, files in enumerate(files_for_constructing):
-			#pprint(vertex)
 			result = self.creating_massive_vertex_position_length_word(files, vertex)
-			#pprint(result)
 			file = self.parts_vertex_pos_with_length_data_path + '/%s_part_vertex_pos_with_length.pkl' % i
 			f = open(file, 'wb')
 			pickle.dump(result, f)
@@ -114,13 +108,9 @@ class StatVertex:
 		with open(file, 'rb') as f:
 			vertex_trans_with_pos = pickle.load(f)
 		for vertex_aim in vertex_unique_elements:
-			#pprint(vertex_aim)
 			for key_vertex in vertex_trans_with_pos:
-				#print(key_vertex)
 				if vertex_aim[0] == key_vertex:
-					#print('==')
 					for elements in vertex_trans_with_pos[key_vertex]:
-						#print(elements)
 						vertex_aim[1].append(str(elements[0]))
 						vertex_aim[2].append(str(elements[1]))
 						vertex_aim[3].append(str(elements))
@@ -137,24 +127,19 @@ class StatVertex:
 
 		with open(self.vertex_unique_elements_data_path + '/vertex_unique_elements.pkl', 'rb') as f:
 			vertex_unique_elements = pickle.load(f)
-		#pprint(vertex_unique_elements)
 		print('vertex_unique_elements', len(vertex_unique_elements))
 
 		os.chdir(self.parts_vertex_pos_with_length_data_path)
 		list_files = glob.glob('*.*pkl')
-		#pprint(list_files)
 		files_for_constructing = list()
 		pattern = self.parts_vertex_pos_with_length_data_path
 
 		for files in list_files:
 			string = pattern + "/" + files
 			files_for_constructing.append(string)
-		#pprint(files_for_constructing)
 		
-		# исправление	
 		ch = list()
 		for i, files in enumerate(files_for_constructing):
-			#print(files)
 			self.get_pos_length_to_each_vertex(files, vertex_unique_elements)
 			ch.append(1)
 			print('\nfiles count: ' + str(sum(ch)), end=' ')
