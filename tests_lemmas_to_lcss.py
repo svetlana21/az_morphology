@@ -30,7 +30,7 @@ class TestLCS(unittest.TestCase):
 									 OrderedDict([('abadlıqlardan', OrderedDict([('Number', 'plur'), ('Case', 'abl')]))])
 									 ]
 									)])
-		true_result = OrderedDict([('abadlı',
+		true_result = [['abadlı',
 									[OrderedDict([('abadlıq', OrderedDict([('Number', 'sing'), ('Case', 'nom')]))]),
 									 OrderedDict([('abadlıqlar', OrderedDict([('Number', 'plur'), ('Case', 'nom')]))]),
 									 OrderedDict([('abadlığın', OrderedDict([('Number', 'sing'), ('Case', 'gen')]))]),
@@ -44,6 +44,6 @@ class TestLCS(unittest.TestCase):
 									 OrderedDict([('abadlıqdan', OrderedDict([('Number', 'sing'), ('Case', 'abl')]))]),
 									 OrderedDict([('abadlıqlardan', OrderedDict([('Number', 'plur'), ('Case', 'abl')]))])
 									 ]
-									)])
+									]]
 		fact_result = self.test_lcss.lcs_as_lemmas(test_data)
-		self.assertDictEqual(true_result, fact_result)
+		self.assertEqual(true_result, fact_result)
