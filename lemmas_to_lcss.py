@@ -39,7 +39,7 @@ class LCS:
 		:param morphodict: исходный словарь
 		:return: новый словарь, где на месте леммы НОП
 		'''
-		new_dict = OrderedDict()
+		new_dict = []
 		for word_tuple in morphodict.items():						# для каждого слова
 			forms = [list(el.keys())[0] for el in word_tuple[1]]	# список всех форм
 			combos = list(itertools.combinations(forms, 2))			# список всех комбинаций форм
@@ -48,7 +48,7 @@ class LCS:
 			for i in range(1,len(lcss)):
 				if len(lcss[i]) < len(min_string):					# выбираем НОП наименьшей длины
 					min_string = lcss[i]
-			new_dict.update({min_string: word_tuple[1]})			# формируем новый словарь, где на месте леммы НОП
+			new_dict.append([min_string, word_tuple[1]])			# формируем новый словарь, где на месте леммы НОП
 		return new_dict
 
 	def load_json(self, filename):
@@ -106,13 +106,13 @@ def cut_paradigm_verbs(morphodict):
 if __name__ == '__main__':
 	lcss = LCS()
 	morphodict_verbs = lcss.load_json('verbs.json')
-	cut_morphodict_verbs = cut_paradigm_verbs(morphodict_verbs)
-	lcss.write_json('verbs_cut.json', cut_morphodict_verbs)
-	new_verbs = lcss.lcs_as_lemmas(cut_morphodict_verbs)
-	lcss.write_json('verbs_cut_lcs.json', new_verbs)
+	# cut_morphodict_verbs = cut_paradigm_verbs(morphodict_verbs)
+	# lcss.write_json('verbs_cut.json', cut_morphodict_verbs)
+	new_verbs = lcss.lcs_as_lemmas(morphodict_verbs)
+	lcss.write_json('verbs_lcs_list.json', new_verbs)
 
 	morphodict_nouns = lcss.load_json('nouns.json')
-	cut_morphodict_nouns = cut_paradigms_nouns(morphodict_nouns)
-	lcss.write_json('nouns_cut.json', cut_morphodict_nouns)
-	new_nouns = lcss.lcs_as_lemmas(cut_morphodict_nouns)
-	lcss.write_json('nouns_cut_lcs.json', new_nouns)
+	# cut_morphodict_nouns = cut_paradigms_nouns(morphodict_nouns)
+	# lcss.write_json('nouns_cut.json', cut_morphodict_nouns)
+	new_nouns = lcss.lcs_as_lemmas(morphodict_nouns)
+	lcss.write_json('nouns_lcs_list.json', new_nouns)
