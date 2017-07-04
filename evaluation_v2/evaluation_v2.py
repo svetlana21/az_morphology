@@ -118,13 +118,15 @@ def evaluate(word_list):
 	verb_forms = load_list('new_verb_forms.txt')
 	morphodict_nouns = load_json('new_nouns_lcs.json')
 	morphodict_verbs = load_json('new_verbs_lcs.json')
-	count_all = len(noun_forms) + len(verb_forms)
+	count_all = 0
 	count_correct = 0
 	for word in word_list:
 		lemma = ''
 		if word[0] in verb_forms:
+			count_all += 1
 			lemma = get_lemma(word[0], morphodict_verbs)
 		elif word[0] in noun_forms:
+			count_all += 1
 			lemma = get_lemma(word[0], morphodict_nouns)
 		if lemma != '':
 			if lemma + '<>' in word[1]:
