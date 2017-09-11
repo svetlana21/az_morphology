@@ -3,6 +3,7 @@
 import os
 import csv
 import json
+import pickle
 from collections import OrderedDict
 from pprint import pprint
 
@@ -32,7 +33,7 @@ def write_json(filename, dct):
 	Запись файла json.
 	:param filename: имя файла json
 	:param dct: словарь для записи
-	:return: 
+	:return:
 	'''
 	with open(filename, 'w', encoding='utf-8-sig') as f:
 		json.dump(dct, f, ensure_ascii=False)
@@ -40,9 +41,9 @@ def write_json(filename, dct):
 def change_morphodict(corpus, morphodict):
 	'''
 	Оставляем в парадигмах только те формы, что встретились в корпусе.
-	:param corpus: 
-	:param morphodict: 
-	:return: 
+	:param corpus:
+	:param morphodict:
+	:return:
 	'''
 	new_morphodict = []
 	for sublist in morphodict:
@@ -59,7 +60,7 @@ def make_form_list(morphodict, filename):
 	Составление списка всех форм из викисловаря.
 	:param morphodict: таблицы в виде словаря
 	:param filename: имя файла для записи
-	:return: 
+	:return:
 	'''
 	form_list = []
 	for word_tuple in morphodict:  # для каждого слова
@@ -97,9 +98,9 @@ def load_csv(filename):
 def get_lemma(word, morphodict):
 	'''
 	Найти лемму для определённой формы.
-	:param word: 
-	:param morphodict: 
-	:return: 
+	:param word:
+	:param morphodict:
+	:return:
 	'''
 	for word_tuple in morphodict:
 		for i in range(len(word_tuple[1])):
@@ -108,11 +109,23 @@ def get_lemma(word, morphodict):
 				break
 	return lemma
 
+def correct_paradigms(morphodict, correct_forms):
+	correct_paras = 0
+	for par in morphodict:
+		count_correct_forms = 0
+		for el in par[1]:
+			if list(el.keys())[0] in correct_forms:
+				count_correct_forms += 1
+
+		if count_correct_forms == len(par[1]):
+			correct_paras += 1
+	return correct_paras
+
 def evaluate(word_list):
 	'''
 	Оценка.
-	:param word_list: 
-	:return: 
+	:param word_list:
+	:return:
 	'''
 	noun_forms = load_list('new_noun_forms.txt')
 	verb_forms = load_list('new_verb_forms.txt')
@@ -120,6 +133,7 @@ def evaluate(word_list):
 	morphodict_verbs = load_json('new_verbs_lcs.json')
 	count_all = 0
 	count_correct = 0
+	correct_forms = []
 	for word in word_list:
 		lemma = ''
 		if word[0] in verb_forms:
@@ -131,12 +145,83 @@ def evaluate(word_list):
 		if lemma != '':
 			if lemma + '<>' in word[1]:
 				count_correct += 1
+				correct_forms.append(word[0])
+
+	count_correct_paradigms = correct_paradigms(morphodict_nouns, correct_forms) \
+							  + correct_paradigms(morphodict_verbs, correct_forms)
+
+	print('All: {}'.format(count_all))
+	print('Correct forms: {}'.format(count_correct))
+	print('Correct paradigms: {}'.format(count_correct_paradigms))
+	print('Errors: {}%'.format((1 - count_correct / count_all) * 100))
+
+def linguistica_data():
+	print('Getting lexicon...')
+	lex = lxa.read_corpus('clear_corpus.txt', min_stem_length=1, max_word_types=10000)
+	print('Stems to signatures...')
+	signatures = lex.stems_to_signatures()
+	print('Pickling...')
+	with open('signatures_10000.pickle', 'wb') as f:
+		pickle.dump(signatures, f)
+	return signatures
+
+def lxa_evaluation(signatures):
+	print('Evaluation starts')
+	noun_forms = load_list('new_noun_forms.txt')
+	verb_forms = load_list('new_verb_forms.txt')
+	morphodict_nouns = load_json('new_nouns_lcs.json')
+	morphodict_verbs = load_json('new_verbs_lcs.json')
+	count_all = 0
+	count_correct = 0
+	correct_forms = []
+	for sig in signatures.keys():
+		# forms = [sig + el[i] for el in signatures[sig] for i in  range(len(el)) if el[i] != 'NULL']
+		# divided_forms = [sig + '<>' + el[i] for el in signatures[sig] for i in  range(len(el)) if el[i] != 'NULL']
+		forms = []
+		divided_forms = []
+		for el in signatures[sig]:
+			for i in range(len(el)):
+				if el[i] != 'NULL':
+					if len(sig + el[i]) <= 22:
+						forms.append(sig + el[i])
+						divided_forms.append(sig + '<>' + el[i])
+				else:
+					if len(sig + el[i]) <= 22:
+						forms.append(sig)
+						divided_forms.append(sig + '<>')
+
+		for i, form in enumerate(forms):
+			lemma = ''
+			if form in verb_forms:
+				count_all += 1
+				lemma = get_lemma(form, morphodict_verbs)
+			elif form in noun_forms:
+				count_all += 1
+				lemma = get_lemma(form, morphodict_nouns)
+			if lemma != '':
+				if lemma + '<>' in divided_forms[i]:
+					# print('+: ', lemma, divided_forms[i], divided_forms)
+					count_correct += 1
+					correct_forms.append(form)
+				# else:
+				# 	print('-: ', lemma, divided_forms[i], divided_forms)
+
+	count_correct_paradigms = correct_paradigms(morphodict_nouns, correct_forms) \
+							  + correct_paradigms(morphodict_verbs, correct_forms)
+
 	print('All: {}'.format(count_all))
 	print('Correct: {}'.format(count_correct))
+	print('Correct paradigms: {}'.format(count_correct_paradigms))
 	print('Errors: {}%'.format((1 - count_correct / count_all) * 100))
 
 file_path = os.path.split(os.path.abspath(__file__))[0]
-csv_path = os.path.abspath(file_path + '/../termpaper/FST_morphology-master/FST_morphology/data/result/words_with_border.csv')
+csv_path = os.path.abspath(file_path + '/../termpaper_v2/FST_morphology-master/FST_morphology/data/result/words_with_border.csv')
 
 word_list = load_csv(csv_path)
 evaluate(word_list)
+
+# signatures = linguistica_data()
+with open('signatures_10000.pickle', 'rb') as f:
+	signatures = pickle.load(f)
+# pprint(signatures)
+lxa_evaluation(signatures)
